@@ -1,0 +1,77 @@
+import java.io.*;
+import java.util.*;
+
+public class BlockedUniversity {
+    static ArrayList<Integer>[] graph;
+    static int[] color;
+    static int[] colorNum= new int[2];
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
+
+        StringTokenizer st =new StringTokenizer(bf.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        graph = new ArrayList[n+1];
+        visited =new boolean[n+1];
+        color = new int[n+1];
+
+
+
+        for (int i=0; i<n+1; i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int i=0;i<m; i++){
+            st =new StringTokenizer(bf.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+
+            graph[x].add(y);
+        }
+
+        int ans =0;
+        for (int i=1; i<=n; i++){
+            if (visited[i]) continue;
+            colorNum[0] =0;
+            colorNum[1] = 0;
+            if (!dfs(i, 0)){
+                System.out.println("Impossible");
+                return;
+            }
+            ans+=Math.min(colorNum[0], colorNum[1]);
+
+
+
+
+        }
+
+        System.out.println(ans);
+
+
+
+    }
+
+
+    static boolean[] visited;
+
+    static boolean dfs(int node, int col){
+        if (visited[node]){
+            if (color[node]==col){
+                return true;
+            }
+            return false;
+        }
+
+        visited[node] = true;
+        color[node] = col;
+        colorNum[col]++;
+        boolean possible = true;
+
+         for (int i: graph[node]){
+            if (!dfs(i, 1-col)) possible = false;
+        }
+        return possible;
+    }
+}
