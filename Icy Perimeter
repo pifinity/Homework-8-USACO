@@ -1,0 +1,124 @@
+import java.io.*;
+import java.util.*;
+
+public class IcyPerimeter {
+    static int N;
+    static boolean[][] blob;
+    static boolean[][] knownBlobs;
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf = new BufferedReader(new FileReader("perimeter.in"));
+        PrintWriter out = new PrintWriter("perimeter.out");
+
+        N = Integer.parseInt(bf.readLine());
+        blob = new boolean[N][N];
+        knownBlobs = new boolean[N][N];
+
+        for (int i=0; i<N; i++){
+            String temp = bf.readLine();
+
+            for (int j=0; j<N; j++){
+                if (temp.charAt(j)=='#') blob[i][j] = true;
+            }
+        }
+
+
+
+
+        for (int i=0; i<N; i++){
+            for (int j=0; j<N; j++){
+                if (blob[i][j] && !knownBlobs[i][j]){
+                    bfs(i, j);
+                   /* for (int ii=0; ii<N; ii++){
+                        for (int jj=0; jj<N; jj++){
+                            if (knownBlobs[ii][jj]){
+                                System.out.print(1);
+                            }else{
+                                System.out.print(0);
+                            }
+                        }
+                        System.out.println();
+                    }
+                    System.out.println(maxArea+" "+perimeter);
+                    System.out.println();
+
+                    */
+                }
+
+
+            }
+        }
+
+        out.println(maxArea+" "+perimeter);
+        out.close();
+
+
+
+    }
+
+    static final int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+    static int maxArea = 0;
+    static int perimeter =0;
+
+    static boolean isPerim(int x, int y){
+
+        if (x<0 || x>=N || y<0 || y>=N) return true;
+        if (blob[x][y]) return false;
+        return true;
+
+    }
+
+    static void bfs(int x, int y){
+        Queue<pair> q = new LinkedList<>();
+        q.offer(new pair(x, y));
+        knownBlobs[x][y] = true;
+        int count =0;
+        int perm =0;
+
+        while (q.size()>0){
+            pair cur = q.poll();
+            count++;
+
+
+            for (int i=0; i<4; i++){
+                int nx = cur.x+dir[i][0];
+                int ny = cur.y+dir[i][1];
+
+                if (nx<0 || nx>=N || ny<0 || ny>=N){
+                    perm++;
+                    continue;
+
+                }
+
+
+                if (blob[nx][ny] && !knownBlobs[nx][ny]){
+                    q.offer(new pair(nx, ny));
+                    knownBlobs[nx][ny] = true;
+
+                }else if (!blob[nx][ny]&&!knownBlobs[nx][ny]){
+                    perm++;
+                }
+            }
+
+
+        }
+
+        if (count>maxArea){
+            maxArea = count;
+            perimeter = perm;
+        }else if (count==maxArea){
+            perimeter = Math.min(perimeter, perm);
+        }
+
+
+    }
+
+    static class pair{
+        int x, y;
+
+        public pair(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+}
