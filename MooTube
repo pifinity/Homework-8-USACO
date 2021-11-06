@@ -1,0 +1,80 @@
+import java.io.*;
+import java.util.*;
+
+public class MooTube {
+
+    static class video{
+        int num, rel;
+
+        public video(int number, int relevance){
+            this.num = number;
+            this.rel = relevance;
+        }
+    }
+
+    static ArrayList<video>[] graph;
+    static boolean[] visited;
+
+    static int N;
+    static int m, K, S;
+
+    static void dfs(int curNode){
+
+        visited[curNode] = true;
+        S++;
+        for (video i : graph[curNode]){
+
+            if (!visited[i.num] && i.rel >=K){
+                dfs(i.num);
+            }
+        }
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf = new BufferedReader(new FileReader("mootube.in"));
+        PrintWriter out =new PrintWriter("mootube.out");
+
+        StringTokenizer st= new StringTokenizer(bf.readLine());
+        N = Integer.parseInt(st.nextToken());
+        m= Integer.parseInt(st.nextToken());
+        graph = new ArrayList[N+1];
+
+
+
+
+        for (int i=0; i<=N; i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int i=1; i<N; i++){
+            st =new StringTokenizer(bf.readLine());
+            int a= Integer.parseInt(st.nextToken());
+            int b= Integer.parseInt(st.nextToken());
+            int c= Integer.parseInt(st.nextToken());
+
+            graph[a].add(new video(b, c));
+            graph[b].add(new video(a, c));
+        }
+
+
+
+
+        for (int i=0; i<m; i++){
+            visited = new boolean[N+1];
+            st = new StringTokenizer(bf.readLine());
+            S = 0;
+            K = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            dfs(v);
+            out.println(S-1);
+
+        }
+
+        out.close();
+
+
+
+    }
+}
